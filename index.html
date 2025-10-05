@@ -1104,12 +1104,65 @@
                     depositInstructionTextColor: config.depositInstructionTextColor || "var(--text-color)", // Load from Firebase
                     depositNumberColor: config.depositNumberColor || "var(--accent-color)" // Load from Firebase
                 };
+                
+                // Apply the gradient color to all green elements
+                applyGradientColors();
             }
         } catch (error) {
             console.error("Failed to load app config:", error);
             throw error;
         }
     }
+    
+    // === NEW: Function to extract and apply gradient colors ===
+    function applyGradientColors() {
+        const gradient = appConfig.balanceCardBgGradient;
+        
+        // Extract the main color from gradient (first color)
+        const mainColor = extractMainColorFromGradient(gradient);
+        
+        if (mainColor) {
+            // Update CSS variables for all green elements
+            document.documentElement.style.setProperty('--primary-color', mainColor);
+            document.documentElement.style.setProperty('--primary-hover', lightenColor(mainColor, 20));
+            document.documentElement.style.setProperty('--success-color', mainColor);
+            
+            // Update specific elements that need the gradient
+            const balanceCard = document.querySelector('.balance-card');
+            if (balanceCard) {
+                balanceCard.style.background = gradient;
+            }
+            
+            console.log("Applied gradient colors:", { mainColor, gradient });
+        }
+    }
+    
+    // Helper function to extract main color from gradient
+    function extractMainColorFromGradient(gradient) {
+        // Extract the first color from gradient string
+        const colorMatch = gradient.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}|rgb\([^)]+\)|rgba\([^)]+\)/);
+        if (colorMatch && colorMatch[0]) {
+            return colorMatch[0];
+        }
+        return null;
+    }
+    
+    // Helper function to lighten a color
+    function lightenColor(color, percent) {
+        // Simple color lightening logic
+        // This is a basic implementation - you might want to use a more robust color library
+        if (color.startsWith('#')) {
+            // Hex color
+            const num = parseInt(color.replace("#", ""), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+        }
+        return color; // Return original if not hex
+    }
+
     async function loadUserData() {
         if (!tgUser || !tgUser.id) return Promise.resolve(); // Resolve immediately if no user ID
         try {
@@ -1492,6 +1545,10 @@
                     depositNumberColor: config.depositNumberColor || "var(--accent-color)" // Load new number color
                 };
                 console.log("App config updated:", appConfig);
+                
+                // Apply the new gradient colors
+                applyGradientColors();
+                
                 updateDisplay();
                 updateAdButtonStates(); // Update button states when global config changes
                 // If the limit or global status changed, we might need to update UI state
@@ -2683,7 +2740,7 @@
             console.error("Error buying VIP with balance:", error);
             showMessageModal('Error', 'Failed to purchase. Please try again.');
         }
-    });
+    }
     document.getElementById('deposit-and-buy-btn').addEventListener('click', () => {
         if (!currentSelectedPackage) return;
         document.getElementById('deposit-package-id').value = currentSelectedPackage.id;
@@ -2736,7 +2793,7 @@
             console.error("Error submitting deposit request:", error);
             showMessageModal('Error', 'Failed to submit request. Please try again.');
         }
-    });
+    }
     // === NEW: Watch VIP Video Function ===
     async function watchVipVideo(packageId) {
         if (!tgUser || !tgUser.id || !packageId) return;
