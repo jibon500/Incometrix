@@ -40,7 +40,7 @@
             --processing-color: #17a2b8;
             --success-color: #28a745;
 
-            /* New dynamic color variables */
+            /* New dynamic color variables - initialized with defaults */
             --dynamic-primary-color: var(--primary-color);
             --dynamic-primary-hover: var(--primary-hover);
             --dynamic-success-color: var(--success-color);
@@ -63,7 +63,7 @@
             --dm-error-color: #EF5350;
             --dm-border-color: rgba(255, 255, 255, 0.1);
 
-            /* Dark mode dynamic variables */
+            /* Dark mode dynamic variables - initialized with defaults */
             --dm-dynamic-primary-color: var(--dm-primary-color);
             --dm-dynamic-primary-hover: var(--dm-primary-hover);
             --dm-dynamic-success-color: var(--dm-success-color);
@@ -86,7 +86,7 @@
             --card-bg: var(--dm-card-bg);
             --error-color: var(--dm-error-color);
             --border-color: var(--dm-border-color);
-            /* Update dynamic variables for dark mode */
+            /* Update dynamic variables for dark mode based on dark mode defaults */
             --dynamic-primary-color: var(--dm-dynamic-primary-color);
             --dynamic-primary-hover: var(--dm-dynamic-primary-hover);
             --dynamic-success-color: var(--dm-dynamic-success-color);
@@ -149,7 +149,8 @@
 
         /* Balance Card */
         .balance-card {
-            background: var(--dynamic-primary-color); /* Updated to use dynamic color */
+            /* background: var(--balance-card-bg); /* Replaced by JS */ */
+            background: linear-gradient(135deg, #00a651, #00753a); /* Default gradient, will be overridden by JS */
             color: white;
             padding: 20px;
             border-radius: 15px;
@@ -1337,15 +1338,12 @@
             dailyAdLimitPerUser: 10, // Default daily ad limit
             isAdSystemActive: true, // Default ad system status
             usdToBdtRate: 120, // Default: 1 USD = 120 BDT
-            balanceCardBgGradient: "linear-gradient(135deg, #00a651, #00753a)", // Default gradient - NOW REPLACED BY COLOR
+            balanceCardBgGradient: "linear-gradient(135deg, #00a651, #00753a)", // Default gradient
             depositInstructionText: "Please send money to: ", // Default instruction text
             depositNumber: "01814892156", // Default number
             depositInstructionBgColor: "#f8f9fa", // Default background color
             depositInstructionTextColor: "var(--text-color)", // Default text color
             depositNumberColor: "var(--accent-color)", // Default number color
-            // New config for dynamic colors
-            primaryColor: "#2ed914", // Default green
-            balanceCardBgColor: "#00a651" // Default balance card color
         };
 
         // - Updated Balance Logic -
@@ -1372,7 +1370,7 @@
                             loadUserVipSubscriptions(); // Load user's VIP subscriptions
                             startVipUpdateInterval(); // Start background update for VIP data
                         }).catch(error => {
-                            console.error("Error loading user data:", error);
+                            console.error("Error loading user ", error);
                             // Optionally show an error message to the user
                         });
                     }).catch(error => {
@@ -1389,7 +1387,7 @@
                             loadUserVipSubscriptions();
                             startVipUpdateInterval();
                         }).catch(error => {
-                            console.error("Error loading user data:", error);
+                            console.error("Error loading user ", error);
                         });
                     }).catch(error => {
                         console.error("Error loading app config:", error);
@@ -1422,24 +1420,25 @@
                         dailyAdLimitPerUser: config.dailyAdLimitPerUser !== undefined ? config.dailyAdLimitPerUser : 10,
                         isAdSystemActive: config.isAdSystemActive !== undefined ? config.isAdSystemActive : true,
                         usdToBdtRate: config.usdToBdtRate !== undefined ? config.usdToBdtRate : 120,
-                        // Updated for dynamic color - NOW USING balanceCardBgColor instead of gradient
-                        balanceCardBgColor: config.balanceCardBgColor || "#00a651", // Use solid color
+                        balanceCardBgGradient: config.balanceCardBgGradient || "linear-gradient(135deg, #00a651, #00753a)", // Load from Firebase
                         depositInstructionText: config.depositInstructionText || "Please send money to: ",
                         depositNumber: config.depositNumber || "01814892156",
                         depositInstructionBgColor: config.depositInstructionBgColor || "#f8f9fa",
                         depositInstructionTextColor: config.depositInstructionTextColor || "var(--text-color)",
                         depositNumberColor: config.depositNumberColor || "var(--accent-color)",
-                        // Load new dynamic color config
-                        primaryColor: config.primaryColor || "#2ed914"
                     };
                     console.log("App config loaded:", appConfig);
 
-                    // Update dynamic colors after config is loaded
-                    updateDynamicColors();
+                    // Update theme colors after config is loaded
+                    updateThemeColors();
+                    // Update balance card background specifically
+                    updateBalanceCardColor();
                 } else {
                     console.log("No app config found in Firebase, using defaults.");
-                    // Update dynamic colors with defaults if no config found
-                    updateDynamicColors();
+                    // Update theme colors with defaults if no config found
+                    updateThemeColors();
+                    // Update balance card background specifically
+                    updateBalanceCardColor();
                 }
             } catch (error) {
                 console.error("Failed to load app config:", error);
@@ -1448,25 +1447,51 @@
         }
 
         // Function to update CSS variables based on appConfig
-        function updateDynamicColors() {
+        function updateThemeColors() {
             const root = document.documentElement;
 
-            // Set dynamic color variables
-            root.style.setProperty('--dynamic-primary-color', appConfig.primaryColor);
-            root.style.setProperty('--dynamic-primary-hover', appConfig.primaryColor); // Or calculate a darker/lighter shade
-            root.style.setProperty('--dynamic-success-color', appConfig.primaryColor); // Use primary for success
-            root.style.setProperty('--dynamic-accent-color', appConfig.primaryColor); // Use primary for accent if needed
-            // Add more as needed, e.g., for borders, backgrounds, etc.
-
-            // Update balance card background color (replacing the old gradient logic)
-            const balanceCard = document.querySelector('.balance-card');
-            if (balanceCard) {
-                // Use the solid color from config
-                balanceCard.style.background = appConfig.balanceCardBgColor;
-                // Ensure text remains readable, maybe adjust based on luminance later if needed
+            // Extract a primary-like color from the gradient or use a fallback
+            // This is a simple heuristic: take the first color from the gradient string
+            let primaryColor = "#2ed914"; // Default fallback
+            if (appConfig.balanceCardBgGradient && typeof appConfig.balanceCardBgGradient === 'string') {
+                // Match the first hex color in the gradient string
+                const colorMatch = appConfig.balanceCardBgGradient.match(/#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})/);
+                if (colorMatch) {
+                    primaryColor = colorMatch[0];
+                } else {
+                    // If no hex color found, try to parse a named color or rgba if needed
+                    // For simplicity, we'll just keep the fallback if regex fails
+                }
             }
 
-            console.log("Dynamic colors updated from config:", appConfig.primaryColor, appConfig.balanceCardBgColor);
+            // Calculate a slightly darker hover color (simple method)
+            let hoverColor = primaryColor;
+            if (primaryColor.startsWith('#')) {
+                const hex = primaryColor.replace('#', '');
+                const r = Math.max(0, parseInt(hex.substr(0, 2), 16) - 20);
+                const g = Math.max(0, parseInt(hex.substr(2, 2), 16) - 20);
+                const b = Math.max(0, parseInt(hex.substr(4, 2), 16) - 20);
+                hoverColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            }
+
+            // Set dynamic color variables
+            root.style.setProperty('--dynamic-primary-color', primaryColor);
+            root.style.setProperty('--dynamic-primary-hover', hoverColor);
+            root.style.setProperty('--dynamic-success-color', primaryColor); // Use primary for success
+            root.style.setProperty('--dynamic-accent-color', primaryColor); // Use primary for accent if needed
+            // Add more as needed, e.g., for borders, backgrounds, etc.
+
+            console.log("Dynamic colors updated from config:", primaryColor, hoverColor);
+        }
+
+        // Function to update balance card background specifically
+        function updateBalanceCardColor() {
+            const balanceCard = document.querySelector('.balance-card');
+            if (balanceCard) {
+                // Use the gradient from config
+                balanceCard.style.background = appConfig.balanceCardBgGradient;
+                // Ensure text remains readable, maybe adjust based on luminance later if needed
+            }
         }
 
 
@@ -1559,7 +1584,7 @@
                 }
 
             } catch (error) {
-                console.error("Error loading user data:", error);
+                console.error("Error loading user ", error);
                 // Optionally show an error message to the user
             }
         }
@@ -1688,9 +1713,7 @@
                             // Update tracking first
                             await updateAdTracking();
                             await grantReward();
-                            // Button states are updated in updateAdTracking
-                            // Optionally show a message to the user
-                            // showMessageModal('Error', 'An error occurred. Reward granted anyway.');
+                            // Button states are updated in updateAdTracking via listener, so no need to re-enable here immediately
                         })
                         .finally(() => {
                             // Button re-enable is handled in updateAdTracking via listener, so no need to re-enable here immediately
@@ -1794,7 +1817,7 @@
                 });
                 console.log("User data saved successfully.");
             } catch (error) {
-                console.error("Error saving user data:", error);
+                console.error("Error saving user ", error);
                 // Optionally inform the user that data might not be saved
             }
         }
@@ -2046,12 +2069,6 @@
                                     referrerId: parseInt(referrerId), // Store as number if IDs are numbers
                                     referredBy: referrerData.username || referrerData.firstName || `User ${referrerId}` // Store name for display
                                 });
-
-                                // Update local state for referrer (if this user *is* the referrer, unlikely here)
-                                if (tgUser.id.toString() === referrerId) {
-                                    referralData.referralCount = newReferralCount;
-                                    referralData.referralEarnings = newReferralEarnings;
-                                }
 
                                 // Add reward to referrer's points and balance
                                 let referrerNewPoints = (referrerData.points || 0) + referralReward;
@@ -2538,13 +2555,12 @@
                 const config = snapshot.val();
                 if (config) {
                     // Store old values to check for changes
-                    const oldBalanceCardBg = appConfig.balanceCardBgColor; // Use the new color config
+                    const oldBalanceCardBg = appConfig.balanceCardBgGradient; // Use the new gradient config
                     const oldDepositInstrText = appConfig.depositInstructionText;
                     const oldDepositNumber = appConfig.depositNumber;
                     const oldDepositInstrBgColor = appConfig.depositInstructionBgColor;
                     const oldDepositInstrTextColor = appConfig.depositInstructionTextColor;
                     const oldDepositNumberColor = appConfig.depositNumberColor;
-                    const oldPrimaryColor = appConfig.primaryColor; // Store old primary color
 
                     // Update config with new values
                     appConfig = {
@@ -2558,23 +2574,20 @@
                         dailyAdLimitPerUser: config.dailyAdLimitPerUser !== undefined ? config.dailyAdLimitPerUser : appConfig.dailyAdLimitPerUser,
                         isAdSystemActive: config.isAdSystemActive !== undefined ? config.isAdSystemActive : appConfig.isAdSystemActive,
                         usdToBdtRate: config.usdToBdtRate !== undefined ? config.usdToBdtRate : appConfig.usdToBdtRate,
-                        // Update the new color configs
-                        balanceCardBgColor: config.balanceCardBgColor || appConfig.balanceCardBgColor,
+                        balanceCardBgGradient: config.balanceCardBgGradient || appConfig.balanceCardBgGradient, // Load new gradient
                         depositInstructionText: config.depositInstructionText || appConfig.depositInstructionText,
                         depositNumber: config.depositNumber || appConfig.depositNumber,
                         depositInstructionBgColor: config.depositInstructionBgColor || appConfig.depositInstructionBgColor,
                         depositInstructionTextColor: config.depositInstructionTextColor || appConfig.depositInstructionTextColor,
                         depositNumberColor: config.depositNumberColor || appConfig.depositNumberColor,
-                        primaryColor: config.primaryColor || appConfig.primaryColor // Load new primary color
                     };
 
-                    // Check if balance card background changed (using new color)
-                    if (oldBalanceCardBg !== appConfig.balanceCardBgColor) {
-                        const balanceCard = document.querySelector('.balance-card');
-                        if (balanceCard) {
-                            // Apply the new solid color
-                            balanceCard.style.background = appConfig.balanceCardBgColor;
-                        }
+                    // Check if balance card background gradient changed
+                    if (oldBalanceCardBg !== appConfig.balanceCardBgGradient) {
+                        // Update the CSS variables for theme colors
+                        updateThemeColors();
+                        // Update the balance card background specifically
+                        updateBalanceCardColor();
                     }
 
                     // If deposit instruction text or number changed, update the deposit modal
@@ -2603,12 +2616,6 @@
                         if (numberElement) {
                             numberElement.style.color = appConfig.depositNumberColor;
                         }
-                    }
-
-                    // Check if primary color changed and update dynamic colors
-                    if (oldPrimaryColor !== appConfig.primaryColor) {
-                        console.log("Primary color changed in config, updating dynamic colors.");
-                        updateDynamicColors(); // Call the function to update CSS variables
                     }
 
                 } else {
