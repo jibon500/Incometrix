@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <style>
-    /* ... (সম্পূর্ণ আগের CSS অপরিবর্তিত রাখা হয়েছে) ... */
+    /* Existing styles from your file */
     :root {
       /* -- Updated all colors to white theme -- */
       --primary-color: #2ed914; /* Keep green for accents */
@@ -18,7 +19,7 @@
       --background-color: #ffffff; /* White background */
       --text-color: #000000; /* Black text */
       --text-muted-color: #666666; /* Dark grey for muted text */
-      --accent-color: #ff8c00; /* Orange for accents */
+      --accent-color: #ff8c00; /* Keep orange for accents */
       --card-bg: #f5f5f5; /* Light grey card background */
       --error-color: #ff4444; /* Error color */
       --pending-color: #ffc107; /* Yellow for pending */
@@ -103,7 +104,7 @@
     .user-info .username { font-size: 18px; font-weight: 700; margin: 0; }
     .user-info .title { font-size: 14px; color: var(--text-muted-color); margin: 0; }
     .balance-card {
-      background: linear-gradient(135deg, #00a651, #00753a); /* Default gradient, will be overridden by JS */ border-radius: 16px; padding: 20px;
+      background: linear-gradient(135deg, #00a651, #00753a); border-radius: 16px; padding: 20px;
       text-align: center; margin-bottom: 25px;
     }
     .balance-card .label { font-size: 16px; opacity: 0.9; color: #ffffff; margin-bottom: 5px; }
@@ -525,121 +526,6 @@
         color: var(--text-muted-color);
         font-size: 14px; /* Increased font size */
     }
-    /* === NEW: VIP Package Styles === */
-    .vip-package-card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 15px;
-      border: 1px solid var(--border-color);
-      position: relative;
-    }
-    .vip-package-card.inactive {
-      opacity: 0.6;
-    }
-    .vip-package-card .package-name {
-      font-size: 18px;
-      font-weight: 700;
-      margin: 0 0 10px 0;
-      color: var(--primary-color);
-    }
-    .vip-package-card .package-detail {
-      font-size: 14px;
-      margin: 3px 0;
-      color: var(--text-muted-color);
-    }
-    .vip-package-card .package-price {
-      font-size: 18px;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    .vip-package-card .package-price-usd {
-      color: var(--accent-color);
-    }
-    .vip-package-card .package-price-bdt {
-      color: var(--text-muted-color);
-      font-size: 14px;
-    }
-    .vip-package-card .buy-button {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: var(--primary-color);
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .vip-package-card .buy-button:hover {
-      background: var(--primary-hover);
-    }
-    .vip-package-card .buy-button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-    .vip-package-card .watch-button {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: var(--success-color);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .vip-package-card .watch-button:hover {
-      background: #218838; /* Slightly darker green */
-    }
-    .vip-package-card .status-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-    .status-pending {
-      background-color: var(--pending-color);
-      color: #000;
-    }
-    .status-active {
-      background-color: var(--success-color);
-      color: #fff;
-    }
-    .status-inactive {
-      background-color: var(--error-color);
-      color: #fff;
-    }
-    /* === NEW: Deposit Form Modal === */
-    #deposit-form-modal .modal-content {
-      width: 95%;
-      max-width: 400px;
-      text-align: left;
-    }
-    #deposit-instructions {
-      background: #f8f9fa;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      color: var(--text-color);
-    }
-    #copy-number-btn {
-      margin-left: 8px;
-      padding: 4px 8px;
-      font-size: 12px;
-      background: var(--primary-color);
-      color: #000;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    #deposit-form .form-group {
-      margin-bottom: 12px;
-    }
   </style>
   <!-- Monetag SDK Scripts -->
   <script src='//libtl.com/sdk.js' data-zone='9807992' data-sdk='show_9807992'></script>
@@ -698,20 +584,6 @@
             <div class="task-icon"><i class="fa-solid fa-wallet"></i></div>
             <div class="task-details"><h3>Withdraw Funds</h3><p>Request to withdraw your available balance.</p></div>
             <div class="task-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-        </div>
-        <!-- === NEW: VIP Package Card on Home === -->
-        <div class="task-card" onclick="showView('vip-packages-view')">
-            <div class="task-icon"><i class="fa-solid fa-crown"></i></div>
-            <div class="task-details"><h3>VIP Package</h3><p>Unlock premium earning power with VIP.</p></div>
-            <div class="task-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-        </div>
-      </div>
-      <!-- === NEW: VIP PACKAGES VIEW === -->
-      <div id="vip-packages-view" class="view">
-        <h2 class="section-title">VIP Packages</h2>
-        <div id="vip-packages-list">
-          <!-- Packages loaded from Firebase -->
-          <div class="loading">Loading VIP packages...</div>
         </div>
       </div>
       <!-- TASKS VIEW -->
@@ -898,50 +770,6 @@
         </div>
     </div>
   </div>
-  <!-- === NEW: Buy VIP Modal === -->
-  <div class="modal-overlay" id="buy-vip-modal">
-    <div class="modal-content">
-      <h3 id="buy-vip-title">Buy Package</h3>
-      <p id="buy-vip-message">Choose how to proceed:</p>
-      <div class="modal-actions">
-        <button class="action-button primary-button" id="buy-with-balance-btn">Buy with Balance</button>
-        <button class="action-button secondary-button" id="deposit-and-buy-btn">Deposit & Buy</button>
-      </div>
-      <div class="modal-actions" style="margin-top: 10px;">
-        <button class="action-button" onclick="closeBuyVipModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-  <!-- === NEW: Deposit Form Modal === -->
-  <div class="modal-overlay" id="deposit-form-modal">
-    <div class="modal-content">
-      <h3>Deposit to Buy</h3>
-      <div id="deposit-instructions">
-        <span id="deposit-instruction-text">Please send money to: </span>
-        <strong id="deposit-number">01814892156</strong>
-        <button id="copy-number-btn" onclick="copyDepositNumber()">Copy</button>
-      </div>
-      <form id="deposit-form">
-        <div class="form-group">
-          <label>Your Mobile Number</label>
-          <input type="tel" id="deposit-mobile" class="form-control" placeholder="01XXXXXXXXX" required>
-        </div>
-        <div class="form-group">
-          <label>Transaction ID</label>
-          <input type="text" id="deposit-txn-id" class="form-control" placeholder="e.g. TXN123456" required>
-        </div>
-        <div class="form-group">
-          <label>Amount (BDT)</label>
-          <input type="number" id="deposit-amount" class="form-control" placeholder="e.g. 300" min="10" required>
-        </div>
-        <input type="hidden" id="deposit-package-id">
-        <button type="submit" class="action-button primary-button">Submit Request</button>
-      </form>
-      <div class="modal-actions" style="margin-top: 10px;">
-        <button class="action-button" onclick="closeDepositFormModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
 <script>
     // --- Theme Toggle Logic ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -999,14 +827,7 @@
       referralClaimThreshold: 200, // Default value
       minWithdrawAmount: 5, // Default value
       dailyAdLimitPerUser: 10, // Default daily ad limit
-      isAdSystemActive: true, // Default ad system status
-      usdToBdtRate: 120, // Default: 1 USD = 120 BDT
-      balanceCardBgGradient: "linear-gradient(135deg, #00a651, #00753a)", // Default gradient
-      depositInstructionText: "Please send money to: ", // Default instruction text
-      depositNumber: "01814892156", // Default number
-      depositInstructionBgColor: "#f8f9fa", // Default background color
-      depositInstructionTextColor: "var(--text-color)", // Default text color
-      depositNumberColor: "var(--accent-color)" // Default number color
+      isAdSystemActive: true // Default ad system status
     };
     let referralData = {
       referralCount: 0,
@@ -1023,11 +844,6 @@
     let lastAdWatchTime = null; // Will be a Date object or null
     let adStatus = 'Active'; // User-specific ad status, default 'Active'
     let resetTimerInterval = null;
-    // === NEW: VIP State ===
-    let vipPackages = [];
-    let currentSelectedPackage = null;
-    let userVipSubscriptions = {}; // To store user's active/pending subscriptions
-    let vipUpdateInterval = null; // For background updates
     // --- Updated Balance Logic ---
     // Dynamic from Firebase: 1000 coins = 30 cents = $0.30 USD
     // 1 coin = $0.0003 USD (calculated dynamically)
@@ -1046,9 +862,6 @@
                         loadTelegramUser();
                         renderLeaderboard();
                         checkForReferral(); // Check if this user was referred
-                        loadVipPackages(); // Load VIP packages
-                        loadUserVipSubscriptions(); // Load user's VIP subscriptions
-                        startVipUpdateInterval(); // Start background update for VIP data
                     }).catch(error => {
                         console.error("Error loading user ", error);
                         // Handle error appropriately, maybe show a message
@@ -1064,9 +877,6 @@
                     renderLeaderboard();
                     checkForReferral(); // Check if this user was referred
                     startResetTimer(); // Start the 12-hour reset timer logic
-                    loadVipPackages(); // Load VIP packages
-                    loadUserVipSubscriptions(); // Load user's VIP subscriptions
-                    startVipUpdateInterval(); // Start background update for VIP data
                 }).catch(error => {
                     console.error("Error loading user ", error);
                     // Handle error appropriately
@@ -1095,14 +905,7 @@
                     referralClaimThreshold: config.referralClaimThreshold !== undefined ? config.referralClaimThreshold : 200,
                     minWithdrawAmount: config.minWithdrawAmount !== undefined ? config.minWithdrawAmount : 5,
                     dailyAdLimitPerUser: config.dailyAdLimitPerUser !== undefined ? config.dailyAdLimitPerUser : 10,
-                    isAdSystemActive: config.isAdSystemActive !== undefined ? config.isAdSystemActive : true,
-                    usdToBdtRate: config.usdToBdtRate !== undefined ? config.usdToBdtRate : 120,
-                    balanceCardBgGradient: config.balanceCardBgGradient || "linear-gradient(135deg, #00a651, #00753a)", // Load from Firebase
-                    depositInstructionText: config.depositInstructionText || "Please send money to: ", // Load from Firebase
-                    depositNumber: config.depositNumber || "01814892156", // Load from Firebase
-                    depositInstructionBgColor: config.depositInstructionBgColor || "#f8f9fa", // Load from Firebase
-                    depositInstructionTextColor: config.depositInstructionTextColor || "var(--text-color)", // Load from Firebase
-                    depositNumberColor: config.depositNumberColor || "var(--accent-color)" // Load from Firebase
+                    isAdSystemActive: config.isAdSystemActive !== undefined ? config.isAdSystemActive : true
                 };
             }
         } catch (error) {
@@ -1180,23 +983,6 @@
                 setupAppConfigListener(); // Setup listener for app config changes
                 setupUserAdDataListener(userRef); // Setup listener for user ad data
             }
-             // --- New: Ensure timer starts for existing users too ---
-            // Check if lastAdWatchTime exists for existing user, if not, set it
-            if (userData && !userData.lastAdWatchTime) {
-                 const nowForTimer = new Date();
-                 try {
-                      await userRef.update({
-                         lastAdWatchTime: nowForTimer.toISOString()
-                      });
-                      lastAdWatchTime = nowForTimer; // Update local variable
-                      console.log("Initial lastAdWatchTime set for existing user to start timer.");
-                 } catch (error) {
-                      console.error("Failed to set initial lastAdWatchTime for existing user:", error);
-                 }
-            }
-            // Ensure timer is always started after loading data
-            startResetTimer();
-            // --- End New ---
         } catch (error) {
             console.error("Failed to load user ", error);
             throw error;
@@ -1294,95 +1080,14 @@
             handleBlockingStatus(blockedStatus);
         });
     }
-    // --- Updated Withdraw History Listener with Refund Logic ---
     function setupWithdrawHistoryListener(userRef) {
         if (withdrawHistoryListener) {
             // Remove previous listener if exists
             userRef.child('withdrawHistory').off('value', withdrawHistoryListener);
         }
-        // Store the previous state of withdrawHistory for comparison
-        let previousWithdrawHistoryState = {};
-        // Store a map of request IDs to their last processed status to prevent duplicate actions
-        let processedStatusMap = {};
         // Set up new listener
         withdrawHistoryListener = userRef.child('withdrawHistory').on('value', (snapshot) => {
             const history = snapshot.val();
-            // --- New Logic for Dynamic Balance Adjustment based on Status ---
-            if (tgUser && tgUser.id && history) {
-                // Create a map of the current state from Firebase
-                let currentFirebaseState = {};
-                Object.values(history).forEach(req => {
-                    currentFirebaseState[req.id] = req;
-                });
-                // Check for status changes for each request
-                Object.values(history).forEach(currentRequest => {
-                    const requestId = currentRequest.id;
-                    const previousRequest = previousWithdrawHistoryState[requestId];
-                    const currentStatus = currentRequest.status;
-                    const previousStatus = previousRequest ? previousRequest.status : null;
-                    // Get the amount for this request
-                    const requestAmount = parseFloat(currentRequest.amount);
-                    if (isNaN(requestAmount) || requestAmount <= 0) {
-                        console.warn(`Invalid amount for request ${requestId}: ${currentRequest.amount}`);
-                        return; // Skip if amount is invalid
-                    }
-                    // Calculate points equivalent to the request amount
-                    const pointsEquivalent = Math.round((requestAmount / appConfig.valuePerConversion) * appConfig.coinsForConversion);
-                    // Define which statuses require balance deduction
-                    const deductionStatuses = ['Pending', 'Processing', 'Success'];
-                    const isCurrentDeductionStatus = deductionStatuses.includes(currentStatus);
-                    const isPreviousDeductionStatus = previousStatus ? deductionStatuses.includes(previousStatus) : false;
-                    console.log(`Checking request ${requestId}: Previous Status: ${previousStatus}, Current Status: ${currentStatus}`);
-                    // --- Prevent Duplicate Actions ---
-                    // Create a unique key for the current state of this request
-                    const currentStateKey = `${requestId}_${currentStatus}`;
-                    // If this exact state (requestId + status) has already been processed, skip it
-                    if (processedStatusMap[requestId] === currentStateKey) {
-                        console.log(`Request ${requestId} with status ${currentStatus} already processed. Skipping.`);
-                        return;
-                    }
-                    // --- End Prevent Duplicate Actions ---
-                    // Case 1: Status changed FROM a deduction status TO 'Rejected'
-                    if (isPreviousDeductionStatus && currentStatus === 'Rejected') {
-                        console.log(`Request ${requestId} changed to Rejected. Refunding $${requestAmount} and ${pointsEquivalent} coins.`);
-                        // Refund: Add back the amount and points
-                        points += pointsEquivalent;
-                        balance += requestAmount;
-                        // Update Firebase and UI
-                        updateUserBalanceAndPoints(userRef, points, balance, `Refunded $${requestAmount.toFixed(2)} and ${pointsEquivalent} coins for rejected withdrawal (${requestId}).`)
-                            .then(() => {
-                                showMessageModal('Refund Successful', `Your withdrawal request for $${requestAmount.toFixed(2)} was rejected. The amount ($${requestAmount.toFixed(2)}) and equivalent coins (${pointsEquivalent}) have been refunded to your balance.`);
-                            });
-                        // Mark this state as processed
-                        processedStatusMap[requestId] = currentStateKey;
-                    }
-                    // Case 2: Status changed FROM 'Rejected' TO a deduction status
-                    else if (previousStatus === 'Rejected' && isCurrentDeductionStatus) {
-                        console.log(`Request ${requestId} changed from Rejected to ${currentStatus}. Deducting $${requestAmount} and ${pointsEquivalent} coins.`);
-                        // Deduct: Subtract the amount and points
-                        points = Math.max(0, points - pointsEquivalent); // Ensure points don't go negative
-                        balance = Math.max(0, balance - requestAmount); // Ensure balance doesn't go negative
-                        // Update Firebase and UI
-                        updateUserBalanceAndPoints(userRef, points, balance, `Deducted $${requestAmount.toFixed(2)} and ${pointsEquivalent} coins for withdrawal status change to ${currentStatus} (${requestId}).`)
-                            .then(() => {
-                                showMessageModal('Balance Updated', `Your withdrawal request status changed to ${currentStatus}. The amount ($${requestAmount.toFixed(2)}) and equivalent coins (${pointsEquivalent}) have been deducted from your balance.`);
-                            });
-                        // Mark this state as processed
-                        processedStatusMap[requestId] = currentStateKey;
-                    }
-                    // Case 3: Initial request creation with a deduction status (when user first submits)
-                    // This is primarily handled by requestWithdraw(), but we check here too for consistency if listener is added after request
-                    // Only deduct if not already deducted (e.g., if listener was removed and re-added)
-                    // A simple check: if user's current balance/points are higher than what they should be after deduction, deduct now.
-                    // This is a bit complex without storing "deducted" flag per request.
-                    // For now, we rely on requestWithdraw() to do the initial deduction.
-                    // This listener primarily handles status *changes*.
-                });
-                // Update the previous state for the next comparison
-                previousWithdrawHistoryState = currentFirebaseState;
-            }
-            // --- End New Logic ---
-            // Update the local withdrawHistory array (this happens AFTER processing)
             if (history) {
                 withdrawHistory = Object.values(history);
                 // Sort by timestamp descending
@@ -1395,26 +1100,6 @@
                 renderWithdrawHistoryModal();
             }
         });
-    }
-    // --- End Updated Withdraw History Listener ---
-    // Helper function to update user balance and points in Firebase and UI
-    async function updateUserBalanceAndPoints(userRef, newPoints, newBalance, historyMessage) {
-        try {
-            await userRef.update({
-                points: newPoints,
-                balance: newBalance
-            });
-            console.log("User balance and points updated in Firebase:", { points: newPoints, balance: newBalance });
-            updateDisplay(); // Update UI immediately
-            if (historyMessage) {
-               addToHistory('system', historyMessage); // Log the change
-            }
-        } catch (error) {
-            console.error("Error updating user balance and points in Firebase:", error);
-            // Even if Firebase update fails, UI is updated. User might need to refresh.
-            updateDisplay();
-            showMessageModal('Update Note', 'Balance updated locally. Please refresh the app if it does not update.');
-        }
     }
     function setupPointsBalanceListener(userRef) {
         if (userPointsBalanceListener) {
@@ -1467,13 +1152,6 @@
             if (config) {
                 const oldLimit = appConfig.dailyAdLimitPerUser;
                 const oldStatus = appConfig.isAdSystemActive;
-                const oldGradient = appConfig.balanceCardBgGradient; // Store old gradient
-                const oldDepositInstrText = appConfig.depositInstructionText;
-                const oldDepositNumber = appConfig.depositNumber;
-                const oldDepositInstrBgColor = appConfig.depositInstructionBgColor;
-                const oldDepositInstrTextColor = appConfig.depositInstructionTextColor;
-                const oldDepositNumberColor = appConfig.depositNumberColor;
-
                 appConfig = {
                     pointsPerAd: config.pointsPerAd || 10,
                     coinsForConversion: config.coinsForConversion || 1000,
@@ -1482,14 +1160,7 @@
                     referralClaimThreshold: config.referralClaimThreshold !== undefined ? config.referralClaimThreshold : 200,
                     minWithdrawAmount: config.minWithdrawAmount !== undefined ? config.minWithdrawAmount : 5,
                     dailyAdLimitPerUser: config.dailyAdLimitPerUser !== undefined ? config.dailyAdLimitPerUser : 10,
-                    isAdSystemActive: config.isAdSystemActive !== undefined ? config.isAdSystemActive : true,
-                    usdToBdtRate: config.usdToBdtRate !== undefined ? config.usdToBdtRate : 120,
-                    balanceCardBgGradient: config.balanceCardBgGradient || "linear-gradient(135deg, #00a651, #00753a)", // Load new gradient
-                    depositInstructionText: config.depositInstructionText || "Please send money to: ", // Load new text
-                    depositNumber: config.depositNumber || "01814892156", // Load new number
-                    depositInstructionBgColor: config.depositInstructionBgColor || "#f8f9fa", // Load new bg color
-                    depositInstructionTextColor: config.depositInstructionTextColor || "var(--text-color)", // Load new text color
-                    depositNumberColor: config.depositNumberColor || "var(--accent-color)" // Load new number color
+                    isAdSystemActive: config.isAdSystemActive !== undefined ? config.isAdSystemActive : true
                 };
                 console.log("App config updated:", appConfig);
                 updateDisplay();
@@ -1497,39 +1168,6 @@
                 // If the limit or global status changed, we might need to update UI state
                 if (oldLimit !== appConfig.dailyAdLimitPerUser || oldStatus !== appConfig.isAdSystemActive) {
                      // The display update will reflect the new values
-                }
-                // If the gradient changed, update the balance card background
-                if (oldGradient !== appConfig.balanceCardBgGradient) {
-                    const balanceCard = document.querySelector('.balance-card');
-                    if (balanceCard) {
-                        balanceCard.style.background = appConfig.balanceCardBgGradient;
-                    }
-                }
-                // If deposit instruction text or number changed, update the deposit modal
-                if (oldDepositInstrText !== appConfig.depositInstructionText || oldDepositNumber !== appConfig.depositNumber) {
-                    const instrTextElement = document.getElementById('deposit-instruction-text');
-                    const numberElement = document.getElementById('deposit-number');
-                    if (instrTextElement) {
-                        instrTextElement.textContent = appConfig.depositInstructionText;
-                    }
-                    if (numberElement) {
-                        numberElement.textContent = appConfig.depositNumber;
-                    }
-                }
-                // If deposit instruction colors changed, update the deposit modal
-                if (oldDepositInstrBgColor !== appConfig.depositInstructionBgColor ||
-                    oldDepositInstrTextColor !== appConfig.depositInstructionTextColor ||
-                    oldDepositNumberColor !== appConfig.depositNumberColor) {
-                    const depositInstructionsElement = document.getElementById('deposit-instructions');
-                    if (depositInstructionsElement) {
-                        depositInstructionsElement.style.backgroundColor = appConfig.depositInstructionBgColor;
-                        depositInstructionsElement.style.color = appConfig.depositInstructionTextColor;
-                        // Update the number color via CSS variable or direct style
-                        const numberElement = depositInstructionsElement.querySelector('#deposit-number');
-                        if (numberElement) {
-                            numberElement.style.color = appConfig.depositNumberColor;
-                        }
-                    }
                 }
             }
         });
@@ -1603,14 +1241,6 @@
         const activeBtn = document.querySelector(`.nav-button[onclick="showView('${viewId}')"]`);
         if(activeBtn) activeBtn.classList.add('active');
         if (viewId === 'history-view') renderHistory();
-        // === NEW: Load VIP packages if needed ===
-        if (viewId === 'vip-packages-view') {
-            if (vipPackages.length === 0) {
-                loadVipPackages();
-            }
-            // Also reload user's subscriptions to reflect any changes
-            loadUserVipSubscriptions();
-        }
     }
     function showBlockedView() {
         isBlocked = true;
@@ -1691,30 +1321,8 @@
             statusBox.classList.add('status-inactive');
         }
         // Update reset timer display is handled by the timer function
-        // Update balance card background gradient
-        const balanceCard = document.querySelector('.balance-card');
-        if (balanceCard) {
-            balanceCard.style.background = appConfig.balanceCardBgGradient;
-        }
-        // Update deposit instructions
-        const depositInstructionsElement = document.getElementById('deposit-instructions');
-        if (depositInstructionsElement) {
-            depositInstructionsElement.style.backgroundColor = appConfig.depositInstructionBgColor;
-            depositInstructionsElement.style.color = appConfig.depositInstructionTextColor;
-            // Update the number color
-            const numberElement = depositInstructionsElement.querySelector('#deposit-number');
-            if (numberElement) {
-                numberElement.style.color = appConfig.depositNumberColor;
-            }
-            // Update the text content
-            const instrTextElement = depositInstructionsElement.querySelector('#deposit-instruction-text');
-            if (instrTextElement) {
-                instrTextElement.textContent = appConfig.depositInstructionText;
-            }
-            numberElement.textContent = appConfig.depositNumber;
-        }
     }
-    // --- 12-Hour Reset Timer Logic (Updated) ---
+    // --- 12-Hour Reset Timer Logic ---
     function startResetTimer() {
         // Clear any existing interval
         if (resetTimerInterval) {
@@ -1722,10 +1330,10 @@
         }
         // Update display immediately
         updateResetTimerDisplay();
-        // Start the interval ONLY for UI update and checking reset
+        // Start the interval to update the timer every second
         resetTimerInterval = setInterval(() => {
             updateResetTimerDisplay();
-            // Check and reset the counter every second based on real time
+            // Also check and reset the counter every second
             checkAndResetAdCounter();
         }, 1000);
     }
@@ -1754,29 +1362,25 @@
     }
     async function checkAndResetAdCounter() {
         if (!tgUser || !tgUser.id) return;
-        // Check if 12 hours have passed based on actual time
+        // Check if 12 hours have passed
         if (lastAdWatchTime) {
             const now = new Date();
             const timeDiff = now - lastAdWatchTime;
             const hoursDiff = timeDiff / (1000 * 60 * 60);
-            // console.log("Checking reset... Time diff (hours):", hoursDiff); // For debugging
             if (hoursDiff >= 12) {
-                // Always reset the counter and timer, regardless of current value
-                // const oldAdsWatchedToday = adsWatchedToday; // Store for logging if needed
-                adsWatchedToday = 0;
-                const newLastAdWatchTime = new Date(); // Set new start time
-                try {
-                    await database.ref('users/' + tgUser.id).update({
-                        adsWatchedToday: adsWatchedToday,
-                        lastAdWatchTime: newLastAdWatchTime.toISOString()
-                    });
-                    lastAdWatchTime = newLastAdWatchTime; // Update local variable
-                    console.log("Ad counter and timer reset after 12 hours (real-time check).");
-                    updateDisplay(); // Update display to reflect reset
-                    // No need to call updateAdButtonStates() here as it's timer related, not ad view related
-                    startResetTimer(); // Restart the UI timer display with new time
-                } catch (error) {
-                    console.error("Failed to reset ad counter and timer:", error);
+                // Reset the counter if it's not already 0
+                if (adsWatchedToday !== 0) {
+                    adsWatchedToday = 0;
+                    try {
+                        await database.ref('users/' + tgUser.id).update({
+                            adsWatchedToday: adsWatchedToday
+                        });
+                        console.log("Ad counter reset after 12 hours.");
+                        updateDisplay(); // Update display to reflect reset
+                        updateAdButtonStates(); // Update button states
+                    } catch (error) {
+                        console.error("Failed to reset ad counter:", error);
+                    }
                 }
             }
         }
@@ -1810,7 +1414,7 @@
         list.innerHTML = historyLog.map(item => {
             const icon = item.type === 'earn'
                 ? '<i class="fa-solid fa-plus-circle" style="color: var(--primary-color);"></i>'
-                : (item.type === 'system' ? '<i class="fa-solid fa-rotate-left" style="color: var(--success-color);"></i>' : '<i class="fa-solid fa-paper-plane" style="color: var(--accent-color);"></i>');
+                : '<i class="fa-solid fa-paper-plane" style="color: var(--accent-color);"></i>';
             return `
                 <div class="list-item">
                     <div class="history-icon">${icon}</div>
@@ -1944,30 +1548,31 @@
     async function updateAdTracking() {
         if (!tgUser || !tgUser.id) return;
         const now = new Date();
-        // --- Changed: Do not update lastAdWatchTime on every ad view anymore ---
-        // The timer is now independent of ad clicks
-        // --- End Changed ---
+        // Check if the 12-hour period has passed, if so, reset the counter locally for this action
+        let localAdsWatchedToday = adsWatchedToday;
+        let localLastAdWatchTime = lastAdWatchTime;
+        if (localLastAdWatchTime) {
+            const timeDiff = now - localLastAdWatchTime;
+            const hoursDiff = timeDiff / (1000 * 60 * 60);
+            if (hoursDiff >= 12) {
+                localAdsWatchedToday = 0; // Reset for this action
+                // Note: We don't change localLastAdWatchTime here, it will be updated to 'now'
+            }
+        }
         // Increment the local counter for this action
-        let localAdsWatchedToday = adsWatchedToday + 1;
+        localAdsWatchedToday += 1;
+        localLastAdWatchTime = now;
         try {
-            // --- Changed: Only update adsWatchedToday ---
             await database.ref('users/' + tgUser.id).update({
-                adsWatchedToday: localAdsWatchedToday
-                // --- Changed: Do not update lastAdWatchTime on every ad view anymore ---
-                // lastAdWatchTime: localLastAdWatchTime.toISOString() // Store as ISO string
-                // --- End Changed ---
+                adsWatchedToday: localAdsWatchedToday,
+                lastAdWatchTime: localLastAdWatchTime.toISOString() // Store as ISO string
             });
-            // --- End Changed ---
-            console.log("Ad tracking updated (counter only):", { localAdsWatchedToday });
+            console.log("Ad tracking updated:", { localAdsWatchedToday, localLastAdWatchTime });
             // Update local state variables to reflect the change
             adsWatchedToday = localAdsWatchedToday;
-            // --- Changed: Do not update lastAdWatchTime on every ad view anymore ---
-            // lastAdWatchTime = localLastAdWatchTime;
-            // --- End Changed ---
+            lastAdWatchTime = localLastAdWatchTime;
             updateDisplay();
-            // --- Changed: Do not restart the timer UI on ad view ---
-            // startResetTimer(); // Restart the timer
-            // --- End Changed ---
+            startResetTimer(); // Restart the timer
             updateAdButtonStates(); // Update button states
         } catch (error) {
             console.error("Failed to update ad tracking:", error);
@@ -2254,15 +1859,14 @@
             method: paymentMethod,
             mobileNumber: mobileNumber,
             amount: amount.toFixed(2),
-            status: 'Pending', // Initially set to Pending
+            status: 'Pending',
             timestamp: new Date().toISOString()
         };
         // Save to Firebase
         const userRef = database.ref('users/' + tgUser.id);
         userRef.child('withdrawHistory').push(withdrawRequest)
             .then(() => {
-                // Immediately deduct balance and update points in Firebase AND locally
-                // This deduction happens immediately when the request is submitted
+                // Immediately deduct balance and update points in Firebase
                 balance -= amount;
                 // Ensure points are calculated correctly and don't go negative
                 points = Math.max(0, Math.round(balance / appConfig.valuePerConversion * appConfig.coinsForConversion));
@@ -2383,6 +1987,7 @@
         const historyDiv = document.getElementById('admin-message-history');
         // Clear previous content
         historyDiv.innerHTML = '';
+
         if (!messagesData) {
             // Add "No messages" message if history is empty
             const noMsgElement = document.createElement('p');
@@ -2393,22 +1998,28 @@
             historyDiv.appendChild(noMsgElement);
             return;
         }
+
         const messages = Object.values(messagesData);
         // Sort messages by timestamp (oldest first)
         messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
         // Create and append message elements
         messages.forEach(msg => {
             const isUser = msg.sender === 'user';
             const bubbleClass = isUser ? 'user-message' : 'admin-message';
+
             const messageDiv = document.createElement('div');
             messageDiv.className = `message-bubble ${bubbleClass}`;
+
             // Add message text and timestamp
             messageDiv.innerHTML = `
                 ${msg.text}
                 <br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small>
             `;
+
             historyDiv.appendChild(messageDiv);
         });
+
         // Scroll to bottom after adding messages
         historyDiv.scrollTop = historyDiv.scrollHeight;
     }
@@ -2502,369 +2113,6 @@
             </div>
         `).join('');
     }
-    // === NEW: VIP Package Functions ===
-    async function loadVipPackages() {
-        try {
-            const snapshot = await database.ref('vipPackages').once('value');
-            const packages = snapshot.val();
-            vipPackages = packages ? Object.entries(packages).map(([id, data]) => ({ id, ...data })) : [];
-            renderVipPackages();
-        } catch (error) {
-            console.error("Failed to load VIP packages:", error);
-            document.getElementById('vip-packages-list').innerHTML = '<p class="error-message">Failed to load packages.</p>';
-        }
-    }
-    async function loadUserVipSubscriptions() {
-        if (!tgUser || !tgUser.id) return;
-        try {
-            const snapshot = await database.ref('users/' + tgUser.id + '/vipSubscriptions').once('value');
-            userVipSubscriptions = snapshot.val() || {};
-            console.log("User VIP subscriptions loaded:", userVipSubscriptions);
-            // Re-render packages to reflect updated subscription status
-            renderVipPackages();
-        } catch (error) {
-            console.error("Failed to load user VIP subscriptions:", error);
-        }
-    }
-    function renderVipPackages() {
-        const container = document.getElementById('vip-packages-list');
-        if (vipPackages.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:var(--text-muted-color);">No VIP packages available.</p>';
-            return;
-        }
-
-        container.innerHTML = vipPackages.map(pkg => {
-            const isActive = pkg.status === 'Active';
-            // Check if user has an active or pending subscription for this package
-            const userSubscription = userVipSubscriptions[pkg.id];
-            let buttonHtml = '';
-            let statusBadgeHtml = '';
-            let adCounterHtml = '';
-            let lastAdTimeHtml = '';
-            let timerHtml = '';
-
-            if (userSubscription) {
-                const subStatus = userSubscription.status;
-                statusBadgeHtml = `<div class="status-badge status-${subStatus.toLowerCase()}">${subStatus}</div>`;
-                if (subStatus === 'Active') {
-                    buttonHtml = `<button class="watch-button" onclick="watchVipVideo('${pkg.id}')">Watch Video Now</button>`;
-                    // Add ad counter and last ad time for active packages
-                    const watchedToday = userSubscription.videosWatchedToday || 0;
-                    const limit = userSubscription.dailyVideoLimit;
-                    adCounterHtml = `<div class="package-detail">Today's Ads: ${watchedToday}/${limit}</div>`;
-                    const lastWatchTime = userSubscription.lastVideoWatchTime ? new Date(userSubscription.lastVideoWatchTime).toLocaleTimeString() : 'N/A';
-                    lastAdTimeHtml = `<div class="package-detail">Last Ad Time: ${lastWatchTime}</div>`;
-                    // Add timer display
-                    const resetTime = userSubscription.lastResetTime || userSubscription.activatedAt;
-                    const nextResetTime = new Date(new Date(resetTime).getTime() + 12 * 60 * 60 * 1000); // 12 hours after last reset
-                    const now = new Date();
-                    let timeUntilReset = 0;
-                    if (now < nextResetTime) {
-                        timeUntilReset = nextResetTime - now;
-                    }
-                    const hours = Math.floor(timeUntilReset / (1000 * 60 * 60));
-                    const minutes = Math.floor((timeUntilReset % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((timeUntilReset % (1000 * 60)) / 1000);
-                    const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    timerHtml = `<div class="package-detail">Reset In: ${timeStr}</div>`;
-                } else if (subStatus === 'Pending') {
-                    buttonHtml = `<button class="buy-button" disabled>Pending...</button>`;
-                } else {
-                    // Inactive or other status - might not happen in normal flow, but handle it
-                    buttonHtml = `<button class="buy-button" ${!isActive ? 'disabled' : ''} onclick="selectVipPackage('${pkg.id}')">
-                        ${isActive ? 'Buy Now' : 'Inactive'}
-                    </button>`;
-                }
-            } else {
-                // No subscription for this package
-                buttonHtml = `<button class="buy-button" ${!isActive ? 'disabled' : ''} onclick="selectVipPackage('${pkg.id}')">
-                    ${isActive ? 'Buy Now' : 'Inactive'}
-                </button>`;
-            }
-
-            // Calculate BDT price
-            const priceBdt = (pkg.price * appConfig.usdToBdtRate).toFixed(2);
-
-            // --- NEW: Calculate Potential Earnings and Total Earnings (Price + Profit) ---
-            // 1. Calculate maximum possible ads for the package duration
-            const maxAdsPossible = pkg.durationDays * pkg.dailyVideoLimit;
-            // 2. Calculate total coins potentially earned
-            const totalPotentialCoins = maxAdsPossible * pkg.coinsPerVideo;
-            // 3. Convert potential coins to USD value based on current app config
-            const potentialEarningsUSD = (totalPotentialCoins / appConfig.coinsForConversion) * appConfig.valuePerConversion;
-            // 4. Calculate Total Earnings (Package Price + Potential Earnings)
-            const totalEarningsUSD = pkg.price + potentialEarningsUSD;
-            // --- END NEW ---
-
-            return `
-                <div class="vip-package-card ${!isActive ? 'inactive' : ''}">
-                    ${statusBadgeHtml}
-                    <h3 class="package-name">${pkg.name}</h3>
-                    ${timerHtml} <!-- Timer display for active packages -->
-                    <div class="package-detail">Duration: ${pkg.durationDays} days</div>
-                    <div class="package-detail">Daily Video Limit: ${pkg.dailyVideoLimit}</div>
-                    <div class="package-detail">Coins per Video: ${pkg.coinsPerVideo}</div>
-                    ${adCounterHtml} <!-- Added Ad Counter -->
-                    ${lastAdTimeHtml} <!-- Added Last Ad Time -->
-                    <div class="package-price">
-                        <span class="package-price-usd">$${pkg.price.toFixed(2)}</span>
-                        <br>
-                        <span class="package-price-bdt">≈ ৳${priceBdt} BDT</span>
-                        <!-- NEW: Display Total Earnings alongside price -->
-                        <br>
-                        <span class="package-total-earnings">(Total Earnings: $${totalEarningsUSD.toFixed(2)})</span>
-                    </div>
-                    ${buttonHtml}
-                </div>
-            `;
-        }).join('');
-    }
-
-    function selectVipPackage(packageId) {
-        const pkg = vipPackages.find(p => p.id === packageId);
-        if (!pkg) return;
-        currentSelectedPackage = pkg;
-        const modal = document.getElementById('buy-vip-modal');
-        document.getElementById('buy-vip-title').textContent = `Buy ${pkg.name}`;
-        // Show both USD and BDT in modal
-        const priceBdt = (pkg.price * appConfig.usdToBdtRate).toFixed(2);
-        document.getElementById('buy-vip-message').textContent = `Price: $${pkg.price.toFixed(2)} ≈ ৳${priceBdt} BDT`;
-        if (balance >= pkg.price) {
-            document.getElementById('buy-with-balance-btn').style.display = 'block';
-        } else {
-            document.getElementById('buy-with-balance-btn').style.display = 'none';
-        }
-        modal.classList.add('active');
-    }
-    function closeBuyVipModal() {
-        document.getElementById('buy-vip-modal').classList.remove('active');
-        currentSelectedPackage = null;
-    }
-    document.getElementById('buy-with-balance-btn').addEventListener('click', async () => {
-        if (!currentSelectedPackage || !tgUser) return;
-        const pkg = currentSelectedPackage;
-        if (balance < pkg.price) {
-            showMessageModal('Error', 'Insufficient balance.');
-            return;
-        }
-        try {
-            const userRef = database.ref('users/' + tgUser.id);
-            const now = new Date();
-            const subscriptionData = {
-                packageName: pkg.name,
-                activatedAt: now.toISOString(), // Will be updated by admin
-                expiresAt: null, // Will be calculated by admin
-                dailyVideoLimit: pkg.dailyVideoLimit,
-                coinsPerVideo: pkg.coinsPerVideo,
-                videosWatchedToday: 0,
-                lastVideoWatchTime: null,
-                lastResetTime: now.toISOString(), // Initially set to activated time
-                status: 'Pending' // Default status after purchase
-            };
-            // Deduct balance
-            balance -= pkg.price;
-            points = Math.round((balance / appConfig.valuePerConversion) * appConfig.coinsForConversion);
-            // Save subscription and balance
-            await userRef.update({
-                balance: balance,
-                points: points
-            });
-            await userRef.child('vipSubscriptions').child(pkg.id).set(subscriptionData);
-            updateDisplay();
-            closeBuyVipModal();
-            // Update the UI immediately to show "Pending..." for the specific package
-            // Find the package card and update its button
-            const packageCard = document.querySelector(`.vip-package-card .buy-button[onclick="selectVipPackage('${pkg.id}')"]`);
-            if (packageCard) {
-                packageCard.outerHTML = '<button class="buy-button" disabled>Pending...</button>';
-            }
-            showMessageModal('Success', `Purchase request sent! Admin will activate your ${pkg.name} package soon.`);
-        } catch (error) {
-            console.error("Error buying VIP with balance:", error);
-            showMessageModal('Error', 'Failed to purchase. Please try again.');
-        }
-    });
-    document.getElementById('deposit-and-buy-btn').addEventListener('click', () => {
-        if (!currentSelectedPackage) return;
-        document.getElementById('deposit-package-id').value = currentSelectedPackage.id;
-        closeBuyVipModal();
-        document.getElementById('deposit-form-modal').classList.add('active');
-    });
-    function closeDepositFormModal() {
-        document.getElementById('deposit-form-modal').classList.remove('active');
-        document.getElementById('deposit-form').reset();
-    }
-    function copyDepositNumber() {
-        // Use the number from appConfig
-        const text = appConfig.depositNumber;
-        navigator.clipboard.writeText(text).then(() => {
-            showMessageModal('Copied', 'Number copied to clipboard!');
-        });
-    }
-    document.getElementById('deposit-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!tgUser) return;
-        const mobile = document.getElementById('deposit-mobile').value.trim();
-        const txnId = document.getElementById('deposit-txn-id').value.trim();
-        const amount = parseFloat(document.getElementById('deposit-amount').value);
-        const pkgId = document.getElementById('deposit-package-id').value;
-        if (!mobile || !txnId || isNaN(amount) || amount <= 0) {
-            showMessageModal('Error', 'Please fill all fields correctly.');
-            return;
-        }
-        try {
-            const depositRequest = {
-                userId: tgUser.id,
-                username: tgUser.username || 'Unknown',
-                mobileNumber: mobile,
-                transactionId: txnId,
-                amountBDT: amount,
-                forPackageId: pkgId,
-                status: 'Pending',
-                timestamp: new Date().toISOString()
-            };
-            await database.ref('depositRequests').push(depositRequest);
-            closeDepositFormModal();
-            // Update the UI immediately to show "Pending..." for the specific package associated with this deposit request
-            // Find the package card and update its button
-            const packageCard = document.querySelector(`.vip-package-card .buy-button[onclick="selectVipPackage('${pkgId}')"]`);
-            if (packageCard) {
-                packageCard.outerHTML = '<button class="buy-button" disabled>Pending...</button>';
-            }
-            showMessageModal('Success', 'Deposit request submitted! Admin will review it shortly.');
-        } catch (error) {
-            console.error("Error submitting deposit request:", error);
-            showMessageModal('Error', 'Failed to submit request. Please try again.');
-        }
-    });
-    // === NEW: Watch VIP Video Function ===
-    async function watchVipVideo(packageId) {
-        if (!tgUser || !tgUser.id || !packageId) return;
-        const userSub = userVipSubscriptions[packageId];
-        if (!userSub || userSub.status !== 'Active') {
-            showMessageModal('Error', 'Your VIP subscription for this package is not active.');
-            return;
-        }
-        // Check if the 12-hour period has passed and reset if necessary
-        await checkAndResetVipCounter(packageId);
-        // Check if limit is reached
-        const now = new Date();
-        let isWithinPeriod = true;
-        if (userSub.lastVideoWatchTime) {
-            const timeDiff = now - new Date(userSub.lastVideoWatchTime);
-            const hoursDiff = timeDiff / (1000 * 60 * 60);
-            if (hoursDiff >= 12) {
-                isWithinPeriod = false;
-            }
-        }
-        // If within the 12-hour period, check the limit
-        if (isWithinPeriod && userSub.videosWatchedToday >= userSub.dailyVideoLimit) {
-            showMessageModal('Error', `You have reached your daily video limit of ${userSub.dailyVideoLimit} for this VIP package. Please wait for the timer to reset.`);
-            return;
-        }
-        // Check if the Monetag SDK function is available (use a specific zone for VIP ads if needed)
-        // For now, using the same as main ads
-        if (typeof show_9807992 === 'function') {
-            // Prevent double click by disabling the button immediately
-            const watchBtn = event.currentTarget; // Get the clicked watch button
-            if (watchBtn.classList.contains('disabled')) {
-                return; // Already processing
-            }
-            watchBtn.classList.add('disabled'); // Disable the button
-            show_9807992().then(async () => {
-                // Ad shown successfully (or user interacted)
-                // Grant reward based on the package
-                const coinsEarned = userSub.coinsPerVideo;
-                points += coinsEarned;
-                balance = (points / appConfig.coinsForConversion) * appConfig.valuePerConversion;
-                updateDisplay();
-                addToHistory('earn', `+${coinsEarned} Coin(s) from VIP Ad`);
-                saveUserData();
-                Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-                showMessageModal('Success', `Congratulations! You've earned +${coinsEarned} coins from the VIP ad. Your new balance is $${balance.toFixed(2)}.`);
-                // Update VIP tracking data
-                await updateVipAdTracking(packageId);
-            }).catch((error) => {
-                // Handle errors, e.g., ad failed to load
-                console.error("VIP Ad could not be shown:", error);
-                showMessageModal('Error', "Sorry, the VIP ad could not be loaded. Please try again.");
-                // Re-enable the button on error
-                watchBtn.classList.remove('disabled');
-            });
-        } else {
-            // SDK not loaded or function not available
-            console.warn("Monetag SDK for VIP ads is not ready yet.");
-            showMessageModal('Warning', "Ad provider is not ready. Please try again in a moment.");
-        }
-    }
-    // Function to update VIP ad tracking data in Firebase
-    async function updateVipAdTracking(packageId) {
-        if (!tgUser || !tgUser.id || !packageId) return;
-        const now = new Date();
-        const userRef = database.ref('users/' + tgUser.id);
-        // Increment the videos watched today for this specific package
-        let localVideosWatchedToday = (userVipSubscriptions[packageId].videosWatchedToday || 0) + 1;
-        try {
-            // Update the specific package's subscription data
-            await userRef.child(`vipSubscriptions/${packageId}`).update({
-                videosWatchedToday: localVideosWatchedToday,
-                lastVideoWatchTime: now.toISOString()
-            });
-            console.log("VIP Ad tracking updated:", { packageId, localVideosWatchedToday, time: now.toISOString() });
-            // Update local state variables to reflect the change
-            if (userVipSubscriptions[packageId]) {
-                userVipSubscriptions[packageId].videosWatchedToday = localVideosWatchedToday;
-                userVipSubscriptions[packageId].lastVideoWatchTime = now.toISOString();
-            }
-            // Reload user subscriptions to reflect changes in UI (optional, can be optimized)
-            // loadUserVipSubscriptions(); // Not strictly needed if we update local state
-            renderVipPackages(); // Update the UI immediately to show new count/time
-        } catch (error) {
-            console.error("Failed to update VIP ad tracking:", error);
-        }
-    }
-    // Function to check and reset VIP counter (12-hour basis per package)
-    async function checkAndResetVipCounter(packageId) {
-        if (!tgUser || !tgUser.id || !packageId) return;
-        const userSub = userVipSubscriptions[packageId];
-        if (!userSub) return; // Should not happen if called correctly
-        if (userSub.activatedAt) {
-            const now = new Date();
-            const timeDiff = now - new Date(userSub.activatedAt);
-            const hoursDiff = timeDiff / (1000 * 60 * 60);
-            if (hoursDiff >= 12) {
-                // Reset the counter
-                try {
-                    await database.ref(`users/${tgUser.id}/vipSubscriptions/${packageId}`).update({
-                        videosWatchedToday: 0,
-                        lastVideoWatchTime: now.toISOString() // Set new start time
-                    });
-                    console.log(`VIP counter for package ${packageId} reset after 12 hours.`);
-                    // Update local state
-                    userVipSubscriptions[packageId].videosWatchedToday = 0;
-                    userVipSubscriptions[packageId].lastVideoWatchTime = now.toISOString();
-                    // No need to reload all subscriptions for this single update
-                    renderVipPackages(); // Update the UI immediately to show reset
-                } catch (error) {
-                    console.error(`Failed to reset VIP counter for package ${packageId}:`, error);
-                }
-            }
-        }
-    }
-    // === NEW: Background Update for VIP Data ===
-    function startVipUpdateInterval() {
-        if (vipUpdateInterval) {
-            clearInterval(vipUpdateInterval);
-        }
-        vipUpdateInterval = setInterval(() => {
-            // This function runs every second in the background
-            // It updates the VIP package display if the user is on the VIP view
-            if (document.getElementById('vip-packages-view').classList.contains('active')) {
-                // Only render if the view is active to avoid unnecessary DOM updates
-                renderVipPackages();
-            }
-        }, 1000); // Update every 1000ms (1 second)
-    }
     // Cleanup listener on unload
     window.addEventListener('beforeunload', () => {
         if (userBlockedListener && tgUser && tgUser.id) {
@@ -2894,10 +2142,6 @@
         }
         if (resetTimerInterval) {
             clearInterval(resetTimerInterval);
-        }
-        // === NEW: Clear VIP Update Interval ===
-        if (vipUpdateInterval) {
-            clearInterval(vipUpdateInterval);
         }
     });
 </script>
