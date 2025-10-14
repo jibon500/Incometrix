@@ -9,7 +9,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <style>
-    /* ... (সম্পূর্ণ আগের CSS অপরিবর্তিত রাখা হয়েছে) ... */
     :root {
       /* -- Updated all colors to white theme -- */
       --primary-color: #2ed914; /* Keep green for accents */
@@ -102,13 +101,36 @@
     .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .user-info .username { font-size: 18px; font-weight: 700; margin: 0; }
     .user-info .title { font-size: 14px; color: var(--text-muted-color); margin: 0; }
+    
+    /* BALANCE CARD - NO BACKGROUND, ONLY BORDER AND ROUNDED CORNERS */
     .balance-card {
-      background: linear-gradient(135deg, #00a651, #00753a); /* Default gradient, will be overridden by JS */ border-radius: 16px; padding: 20px;
-      text-align: center; margin-bottom: 25px;
+      background: transparent; /* No background */
+      border-radius: 16px; 
+      padding: 20px;
+      text-align: center; 
+      margin-bottom: 25px;
+      border: 1px solid var(--border-color); /* Keep border for visibility */
     }
-    .balance-card .label { font-size: 16px; opacity: 0.9; color: #ffffff; margin-bottom: 5px; }
-    .balance-card .balance-value { font-size: 36px; font-weight: 800; margin: 0; letter-spacing: 1px; color: #ffffff; }
-    .balance-card .points-value { font-size: 16px; font-weight: 600; color: #ffffff; margin-top: 10px; } /* Changed to white */
+    .balance-card .label { 
+      font-size: 16px; 
+      opacity: 0.9; 
+      color: var(--text-color); /* Changed: Use CSS variable for text color */
+      margin-bottom: 5px; 
+    }
+    .balance-card .balance-value { 
+      font-size: 36px; 
+      font-weight: 800; 
+      margin: 0; 
+      letter-spacing: 1px; 
+      color: var(--text-color); /* Changed: Use CSS variable for text color */
+    }
+    .balance-card .points-value { 
+      font-size: 16px; 
+      font-weight: 600; 
+      color: var(--text-color); /* Changed: Use CSS variable for text color */
+      margin-top: 10px; 
+    }
+    
     /* --- New Ad Info Section --- */
     .ad-info-section {
       display: flex;
@@ -118,28 +140,29 @@
     }
     .ad-info-box {
       flex: 1;
-      background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+      background: transparent; /* Remove background completely */
       border-radius: 10px;
       padding: 10px;
       text-align: center;
       font-size: 12px;
-    }
-    body.dark-mode .ad-info-box {
-      background: rgba(0, 0, 0, 0.2); /* Semi-transparent black in dark mode */
+      border: 1px solid var(--border-color); /* Keep border like balance card */
     }
     .ad-info-box .value {
       font-weight: bold;
       font-size: 14px;
       display: block;
       margin-top: 3px;
+      color: var(--text-color); /* Default text color */
     }
-    .ad-info-box.status-active .value {
+    /* Status text colors only - no background */
+    .status-text-active {
       color: var(--success-color);
     }
-    .ad-info-box.status-inactive .value {
+    .status-text-inactive {
       color: var(--error-color);
     }
     /* --- End Ad Info Section --- */
+    
     .section-title { font-size: 20px; font-weight: 700; margin-bottom: 15px; padding-left: 5px; border-left: 4px solid var(--primary-color); }
     .task-card {
       background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 15px;
@@ -640,6 +663,23 @@
     #deposit-form .form-group {
       margin-bottom: 12px;
     }
+    .required-amount-info {
+      background: #e7f3ff;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: center;
+      border: 1px solid #b3d9ff;
+    }
+    .required-amount-info .label {
+      font-size: 14px;
+      color: var(--text-muted-color);
+    }
+    .required-amount-info .amount {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
   </style>
   <!-- Monetag SDK Scripts -->
   <script src='//libtl.com/sdk.js' data-zone='9807992' data-sdk='show_9807992'></script>
@@ -921,6 +961,12 @@
         <strong id="deposit-number">01814892156</strong>
         <button id="copy-number-btn" onclick="copyDepositNumber()">Copy</button>
       </div>
+      <!-- Required Amount Info -->
+      <div class="required-amount-info">
+        <div class="label">Required Amount to Deposit:</div>
+        <div class="amount" id="required-amount-bdt">৳0 BDT</div>
+        <div class="label" id="required-amount-usd">$0 USD</div>
+      </div>
       <form id="deposit-form">
         <div class="form-group">
           <label>Your Mobile Number</label>
@@ -932,9 +978,10 @@
         </div>
         <div class="form-group">
           <label>Amount (BDT)</label>
-          <input type="number" id="deposit-amount" class="form-control" placeholder="e.g. 300" min="10" required>
+          <input type="number" id="deposit-amount" class="form-control" placeholder="e.g. 600" min="10" required>
         </div>
         <input type="hidden" id="deposit-package-id">
+        <input type="hidden" id="required-amount">
         <button type="submit" class="action-button primary-button">Submit Request</button>
       </form>
       <div class="modal-actions" style="margin-top: 10px;">
@@ -1028,9 +1075,6 @@
     let currentSelectedPackage = null;
     let userVipSubscriptions = {}; // To store user's active/pending subscriptions
     let vipUpdateInterval = null; // For background updates
-    // --- Updated Balance Logic ---
-    // Dynamic from Firebase: 1000 coins = 30 cents = $0.30 USD
-    // 1 coin = $0.0003 USD (calculated dynamically)
     // --- Core App Logic ---
     function initApp() {
         if (window.Telegram && Telegram.WebApp) {
@@ -1683,13 +1727,15 @@
         const statusValue = document.getElementById('ad-status-value');
         // Show global status if inactive, otherwise show user status
         statusValue.textContent = appConfig.isAdSystemActive ? adStatus : 'Inactive (Global)';
-        // Update status box class for color coding
-        statusBox.classList.remove('status-active', 'status-inactive');
+        
+        // --- UPDATED: Apply text color classes correctly ---
+        statusValue.classList.remove('status-text-active', 'status-text-inactive');
         if (appConfig.isAdSystemActive && adStatus === 'Active') {
-            statusBox.classList.add('status-active');
+            statusValue.classList.add('status-text-active');
         } else {
-            statusBox.classList.add('status-inactive');
+            statusValue.classList.add('status-text-inactive');
         }
+        
         // Update reset timer display is handled by the timer function
         // Update balance card background gradient
         const balanceCard = document.querySelector('.balance-card');
@@ -2687,6 +2733,16 @@
     document.getElementById('deposit-and-buy-btn').addEventListener('click', () => {
         if (!currentSelectedPackage) return;
         document.getElementById('deposit-package-id').value = currentSelectedPackage.id;
+        document.getElementById('required-amount').value = currentSelectedPackage.price * appConfig.usdToBdtRate;
+        
+        // Update the required amount display
+        const requiredAmountBdt = currentSelectedPackage.price * appConfig.usdToBdtRate;
+        document.getElementById('required-amount-bdt').textContent = `৳${requiredAmountBdt.toFixed(2)} BDT`;
+        document.getElementById('required-amount-usd').textContent = `$${currentSelectedPackage.price.toFixed(2)} USD`;
+        
+        // Set the deposit amount input to the required amount
+        document.getElementById('deposit-amount').value = requiredAmountBdt.toFixed(0);
+        
         closeBuyVipModal();
         document.getElementById('deposit-form-modal').classList.add('active');
     });
@@ -2708,10 +2764,19 @@
         const txnId = document.getElementById('deposit-txn-id').value.trim();
         const amount = parseFloat(document.getElementById('deposit-amount').value);
         const pkgId = document.getElementById('deposit-package-id').value;
+        const requiredAmount = parseFloat(document.getElementById('required-amount').value);
+        
         if (!mobile || !txnId || isNaN(amount) || amount <= 0) {
             showMessageModal('Error', 'Please fill all fields correctly.');
             return;
         }
+        
+        // Check if deposited amount matches the required amount
+        if (Math.abs(amount - requiredAmount) > 1) { // Allow 1 BDT tolerance
+            showMessageModal('Error', `You must deposit exactly ৳${requiredAmount.toFixed(2)} BDT for this package. Please send the correct amount.`);
+            return;
+        }
+        
         try {
             const depositRequest = {
                 userId: tgUser.id,
