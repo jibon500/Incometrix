@@ -2829,7 +2829,7 @@
                 // Grant reward based on the package
                 const coinsEarned = userSub.coinsPerVideo;
                 
-                // FIX: Check if coinsEarned is valid
+                // FIXED: Proper validation for coinsEarned
                 if (coinsEarned !== undefined && coinsEarned !== null && coinsEarned > 0) {
                     // Update points and balance
                     points += coinsEarned;
