@@ -615,6 +615,10 @@
     .vip-package-card .watch-button:hover {
       background: #218838; /* Slightly darker green */
     }
+    .vip-package-card .watch-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
     .vip-package-card .status-badge {
       position: absolute;
       top: 10px;
@@ -1088,7 +1092,6 @@
                 loadAppConfig().then(() => {
                     loadUserData().then(() => {
                         loadTelegramUser();
-                        renderLeaderboard();
                         checkForReferral(); // Check if this user was referred
                         loadVipPackages(); // Load VIP packages
                         loadUserVipSubscriptions(); // Load user's VIP subscriptions
@@ -1105,7 +1108,6 @@
                 loadUserData().then(() => {
                     loadTelegramUser();
                     showView('home-view');
-                    renderLeaderboard();
                     checkForReferral(); // Check if this user was referred
                     startResetTimer(); // Start the 12-hour reset timer logic
                     loadVipPackages(); // Load VIP packages
@@ -1928,17 +1930,6 @@
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(text)}`;
         Telegram.WebApp.openTelegramLink(shareUrl);
     }
-    // --- Leaderboard Logic (kept for compatibility) ---
-    function renderLeaderboard() {
-        const leaderboardData = [
-            { name: "CryptoKing", score: 25400, avatar: "https://i.pravatar.cc/150?img=1" },
-            { name: "Elena", score: 22100, avatar: "https://i.pravatar.cc/150?img=2" },
-            { name: "ProMiner", score: 19800, avatar: "https://i.pravatar.cc/150?img=3" },
-            { name: "Aisha", score: 17500, avatar: "https://i.pravatar.cc/150?img=4" },
-            { name: "BotMaster", score: 15300, avatar: "https://i.pravatar.cc/150?img=5" },
-        ];
-        // This function is kept but not used in current UI
-    }
     // --- Earning Functions ---
     async function grantReward() {
         if (isBlocked) {
@@ -2593,10 +2584,16 @@
                 const subStatus = userSubscription.status;
                 statusBadgeHtml = `<div class="status-badge status-${subStatus.toLowerCase()}">${subStatus}</div>`;
                 if (subStatus === 'Active') {
-                    buttonHtml = `<button class="watch-button" onclick="watchVipVideo('${pkg.id}')">Watch Video Now</button>`;
-                    // Add ad counter and last ad time for active packages
+                    // Check if user has reached daily limit
                     const watchedToday = userSubscription.videosWatchedToday || 0;
                     const limit = userSubscription.dailyVideoLimit;
+                    const isLimitReached = watchedToday >= limit;
+                    
+                    buttonHtml = `<button class="watch-button" ${isLimitReached ? 'disabled' : ''} onclick="watchVipVideo('${pkg.id}')">
+                        ${isLimitReached ? 'Limit Reached' : 'Watch Video Now'}
+                    </button>`;
+                    
+                    // Add ad counter and last ad time for active packages
                     adCounterHtml = `<div class="package-detail">Today's Ads: ${watchedToday}/${limit}</div>`;
                     const lastWatchTime = userSubscription.lastVideoWatchTime ? new Date(userSubscription.lastVideoWatchTime).toLocaleTimeString() : 'N/A';
                     lastAdTimeHtml = `<div class="package-detail">Last Ad Time: ${lastWatchTime}</div>`;
@@ -2631,17 +2628,6 @@
             // Calculate BDT price
             const priceBdt = (pkg.price * appConfig.usdToBdtRate).toFixed(2);
 
-            // --- NEW: Calculate Potential Earnings and Total Earnings (Price + Profit) ---
-            // 1. Calculate maximum possible ads for the package duration
-            const maxAdsPossible = pkg.durationDays * pkg.dailyVideoLimit;
-            // 2. Calculate total coins potentially earned
-            const totalPotentialCoins = maxAdsPossible * pkg.coinsPerVideo;
-            // 3. Convert potential coins to USD value based on current app config
-            const potentialEarningsUSD = (totalPotentialCoins / appConfig.coinsForConversion) * appConfig.valuePerConversion;
-            // 4. Calculate Total Earnings (Package Price + Potential Earnings)
-            const totalEarningsUSD = pkg.price + potentialEarningsUSD;
-            // --- END NEW ---
-
             return `
                 <div class="vip-package-card ${!isActive ? 'inactive' : ''}">
                     ${statusBadgeHtml}
@@ -2656,9 +2642,6 @@
                         <span class="package-price-usd">$${pkg.price.toFixed(2)}</span>
                         <br>
                         <span class="package-price-bdt">≈ ৳${priceBdt} BDT</span>
-                        <!-- NEW: Display Total Earnings alongside price -->
-                        <br>
-                        <span class="package-total-earnings">(Total Earnings: $${totalEarningsUSD.toFixed(2)})</span>
                     </div>
                     ${buttonHtml}
                 </div>
@@ -2810,8 +2793,10 @@
             showMessageModal('Error', 'Your VIP subscription for this package is not active.');
             return;
         }
+        
         // Check if the 12-hour period has passed and reset if necessary
         await checkAndResetVipCounter(packageId);
+        
         // Check if limit is reached
         const now = new Date();
         let isWithinPeriod = true;
@@ -2822,11 +2807,13 @@
                 isWithinPeriod = false;
             }
         }
+        
         // If within the 12-hour period, check the limit
         if (isWithinPeriod && userSub.videosWatchedToday >= userSub.dailyVideoLimit) {
             showMessageModal('Error', `You have reached your daily video limit of ${userSub.dailyVideoLimit} for this VIP package. Please wait for the timer to reset.`);
             return;
         }
+        
         // Check if the Monetag SDK function is available (use a specific zone for VIP ads if needed)
         // For now, using the same as main ads
         if (typeof show_9807992 === 'function') {
@@ -2836,19 +2823,25 @@
                 return; // Already processing
             }
             watchBtn.classList.add('disabled'); // Disable the button
+            
             show_9807992().then(async () => {
                 // Ad shown successfully (or user interacted)
                 // Grant reward based on the package
                 const coinsEarned = userSub.coinsPerVideo;
-                points += coinsEarned;
-                balance = (points / appConfig.coinsForConversion) * appConfig.valuePerConversion;
-                updateDisplay();
-                addToHistory('earn', `+${coinsEarned} Coin(s) from VIP Ad`);
-                saveUserData();
-                Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-                showMessageModal('Success', `Congratulations! You've earned +${coinsEarned} coins from the VIP ad. Your new balance is $${balance.toFixed(2)}.`);
-                // Update VIP tracking data
-                await updateVipAdTracking(packageId);
+                if (coinsEarned && coinsEarned > 0) {
+                    points += coinsEarned;
+                    balance = (points / appConfig.coinsForConversion) * appConfig.valuePerConversion;
+                    updateDisplay();
+                    addToHistory('earn', `+${coinsEarned} Coin(s) from VIP Ad`);
+                    saveUserData();
+                    Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                    showMessageModal('Success', `Congratulations! You've earned +${coinsEarned} coins from the VIP ad. Your new balance is $${balance.toFixed(2)}.`);
+                    
+                    // Update VIP tracking data
+                    await updateVipAdTracking(packageId);
+                } else {
+                    showMessageModal('Error', 'Invalid coin reward configuration for this VIP package.');
+                }
             }).catch((error) => {
                 // Handle errors, e.g., ad failed to load
                 console.error("VIP Ad could not be shown:", error);
@@ -2881,9 +2874,8 @@
                 userVipSubscriptions[packageId].videosWatchedToday = localVideosWatchedToday;
                 userVipSubscriptions[packageId].lastVideoWatchTime = now.toISOString();
             }
-            // Reload user subscriptions to reflect changes in UI (optional, can be optimized)
-            // loadUserVipSubscriptions(); // Not strictly needed if we update local state
-            renderVipPackages(); // Update the UI immediately to show new count/time
+            // Update the UI immediately to show new count/time
+            renderVipPackages();
         } catch (error) {
             console.error("Failed to update VIP ad tracking:", error);
         }
