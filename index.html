@@ -1064,7 +1064,7 @@
     let withdrawHistoryListener = null;
     let userPointsBalanceListener = null;
     let referralListener = null;
-    let appConfigListener = null; // New listener for appConfig
+    let appConfigListener = null; // New listener for app config
     // Ad tracking variables
     let adsWatchedToday = 0;
     let lastAdWatchTime = null; // Will be a Date object or null
@@ -2888,31 +2888,33 @@
             console.error("Failed to update VIP ad tracking:", error);
         }
     }
-    // Function to check and reset VIP counter (12-hour basis per package)
+    // === FIXED: Function to check and reset VIP counter (12-hour basis per package) ===
     async function checkAndResetVipCounter(packageId) {
         if (!tgUser || !tgUser.id || !packageId) return;
         const userSub = userVipSubscriptions[packageId];
-        if (!userSub) return; // Should not happen if called correctly
-        if (userSub.activatedAt) {
-            const now = new Date();
-            const timeDiff = now - new Date(userSub.activatedAt);
-            const hoursDiff = timeDiff / (1000 * 60 * 60);
-            if (hoursDiff >= 12) {
-                // Reset the counter
-                try {
-                    await database.ref(`users/${tgUser.id}/vipSubscriptions/${packageId}`).update({
-                        videosWatchedToday: 0,
-                        lastVideoWatchTime: now.toISOString() // Set new start time
-                    });
-                    console.log(`VIP counter for package ${packageId} reset after 12 hours.`);
-                    // Update local state
-                    userVipSubscriptions[packageId].videosWatchedToday = 0;
-                    userVipSubscriptions[packageId].lastVideoWatchTime = now.toISOString();
-                    // No need to reload all subscriptions for this single update
-                    renderVipPackages(); // Update the UI immediately to show reset
-                } catch (error) {
-                    console.error(`Failed to reset VIP counter for package ${packageId}:`, error);
-                }
+        if (!userSub) return;
+
+        const now = new Date();
+        const lastResetTime = userSub.lastResetTime ? new Date(userSub.lastResetTime) : new Date(userSub.activatedAt);
+        const timeDiff = now - lastResetTime;
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+        // Check if 12 hours have passed since the last reset
+        if (hoursDiff >= 12) {
+            // Reset the counter and update the last reset time
+            try {
+                await database.ref(`users/${tgUser.id}/vipSubscriptions/${packageId}`).update({
+                    videosWatchedToday: 0,
+                    lastResetTime: now.toISOString()
+                });
+                console.log(`VIP counter for package ${packageId} reset after 12 hours.`);
+                // Update local state
+                userVipSubscriptions[packageId].videosWatchedToday = 0;
+                userVipSubscriptions[packageId].lastResetTime = now.toISOString();
+                // Update the UI immediately to show reset
+                renderVipPackages();
+            } catch (error) {
+                console.error(`Failed to reset VIP counter for package ${packageId}:`, error);
             }
         }
     }
