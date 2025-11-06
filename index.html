@@ -2785,7 +2785,7 @@
             showMessageModal('Error', 'Failed to submit request. Please try again.');
         }
     });
-    // === NEW: Watch VIP Video Function ===
+    // === FIXED: Watch VIP Video Function ===
     async function watchVipVideo(packageId) {
         if (!tgUser || !tgUser.id || !packageId) return;
         const userSub = userVipSubscriptions[packageId];
@@ -2829,16 +2829,25 @@
                 // Grant reward based on the package
                 const coinsEarned = userSub.coinsPerVideo;
                 if (coinsEarned && coinsEarned > 0) {
+                    // Update points and balance
                     points += coinsEarned;
                     balance = (points / appConfig.coinsForConversion) * appConfig.valuePerConversion;
+                    
+                    // Update display immediately
                     updateDisplay();
+                    
+                    // Add to history
                     addToHistory('earn', `+${coinsEarned} Coin(s) from VIP Ad`);
-                    saveUserData();
-                    Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-                    showMessageModal('Success', `Congratulations! You've earned +${coinsEarned} coins from the VIP ad. Your new balance is $${balance.toFixed(2)}.`);
+                    
+                    // Save user data
+                    await saveUserData();
                     
                     // Update VIP tracking data
                     await updateVipAdTracking(packageId);
+                    
+                    // Show success message
+                    Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                    showMessageModal('Success', `Congratulations! You've earned +${coinsEarned} coins from the VIP ad. Your new balance is $${balance.toFixed(2)}.`);
                 } else {
                     showMessageModal('Error', 'Invalid coin reward configuration for this VIP package.');
                 }
